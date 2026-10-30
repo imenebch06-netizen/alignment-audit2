@@ -1,0 +1,186 @@
+/*
+ * theme.css  (light blue theme)
+ * Soft sky-blue backgrounds, white cards, calm blue accents.
+ * Comfort rules: high text contrast, generous spacing, gentle shadows,
+ * visible focus rings, no flashing or glowing effects.
+ */
+
+:root {
+  --bg: #f2f7ff;
+  --surface: #ffffff;
+  --surface-soft: #f7faff;
+  --border: #dbe6f7;
+  --border-strong: #bfd3f2;
+  --text: #1e293b;
+  --text-soft: #475569;
+  --text-faint: #64748b;
+  --blue-50: #eff6ff;
+  --blue-100: #dbeafe;
+  --blue-300: #93c5fd;
+  --blue-500: #3b82f6;
+  --blue-600: #2563eb;
+  --blue-700: #1d4ed8;
+  --blue-900: #1e3a8a;
+  --shadow-sm: 0 1px 2px rgba(30, 58, 138, 0.06);
+  --shadow-md: 0 6px 20px rgba(30, 58, 138, 0.08);
+  --ring: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: var(--text);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% -10%, rgba(147, 197, 253, 0.45), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 95% 0%, rgba(199, 210, 254, 0.45), transparent 55%);
+  background-attachment: fixed;
+}
+
+/* ---------- Structural containers ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 1.25rem;
+  padding: 1.75rem;
+  box-shadow: var(--shadow-md);
+}
+
+/* ---------- Form fields ---------- */
+.field-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--blue-900);
+}
+.field {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  padding: 0.7rem 0.9rem;
+  font-size: 0.9rem;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.field::placeholder { color: #94a3b8; }
+.field:hover { border-color: var(--blue-300); }
+.field:focus { border-color: var(--blue-500); box-shadow: var(--ring); }
+
+/* ---------- Buttons ---------- */
+.btn-primary {
+  border-radius: 0.9rem;
+  padding: 0.9rem 2.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--blue-500), var(--blue-700));
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.28);
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+}
+.btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 10px 22px rgba(37, 99, 235, 0.34); }
+.btn-primary:focus-visible { outline: none; box-shadow: var(--ring), 0 6px 16px rgba(37, 99, 235, 0.28); }
+.btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+.btn-primary.is-loading { animation: soft-pulse 1.8s ease-in-out infinite; }
+
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  padding: 0.55rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--blue-700);
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn-ghost:hover, .btn-ghost[aria-expanded="true"] { background: var(--blue-50); border-color: var(--blue-500); }
+.btn-ghost:focus-visible { outline: none; box-shadow: var(--ring); }
+
+/* ---------- Dropzones ---------- */
+.dropzone {
+  display: flex; flex-direction: column; gap: 0.85rem;
+  border: 2px dashed var(--border-strong);
+  border-radius: 1.25rem;
+  background: var(--surface);
+  padding: 1.4rem;
+  cursor: pointer;
+  outline: none;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+}
+.dropzone:hover, .dropzone:focus-visible, .dropzone.is-over {
+  border-color: var(--blue-500);
+  background: var(--blue-50);
+  box-shadow: var(--ring);
+}
+.dropzone.has-file { border-style: solid; border-color: var(--blue-300); }
+.dz-body {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 12rem;
+  border-radius: 0.9rem;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.dz-preview { max-height: 16rem; max-width: 100%; object-fit: contain; }
+.dz-hint { font-size: 0.9rem; color: var(--text-faint); padding: 1rem; text-align: center; }
+
+/* ---------- Gauge ---------- */
+.gauge-glow { filter: drop-shadow(0 4px 10px rgba(37, 99, 235, 0.25)); }
+#gauge-arc { transition: stroke-dashoffset 1.1s cubic-bezier(0.22, 1, 0.36, 1); }
+
+/* ---------- Severity badges (readable on light backgrounds) ---------- */
+.badge {
+  display: inline-block;
+  border-radius: 9999px;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+.badge-critical { color: #b91c1c; background: #fee2e2; border-color: #fca5a5; }
+.badge-major    { color: #c2410c; background: #ffedd5; border-color: #fdba74; }
+.badge-minor    { color: #a16207; background: #fef9c3; border-color: #fde047; }
+.badge-info     { color: var(--blue-700); background: var(--blue-100); border-color: var(--blue-300); }
+
+/* ---------- Result cards ---------- */
+.item-card {
+  border: 1px solid var(--border);
+  border-radius: 0.9rem;
+  background: var(--surface-soft);
+  padding: 1rem 1.1rem;
+}
+.code-block {
+  margin-top: 0.7rem;
+  border-radius: 0.65rem;
+  border: 1px solid var(--blue-100);
+  background: var(--blue-50);
+  padding: 0.7rem 0.9rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.78rem;
+  color: var(--blue-900);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ---------- Loading ---------- */
+.pulse-dot {
+  height: 0.65rem; width: 0.65rem; border-radius: 9999px;
+  background: var(--blue-500);
+  animation: soft-pulse 1.6s ease-in-out infinite;
+}
+@keyframes soft-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.45); }
+  50%      { box-shadow: 0 0 0 9px rgba(59, 130, 246, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

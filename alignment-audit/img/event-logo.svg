@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 220" width="100%" height="100%">
+  <defs>
+    <!-- Icon Main Gradient -->
+    <linearGradient id="iconMainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333EA" />
+      <stop offset="50%" stop-color="#7E22CE" />
+      <stop offset="100%" stop-color="#4C1D95" />
+    </linearGradient>
+
+    <!-- Icon Top Accent Gradient -->
+    <linearGradient id="iconAccentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C084FC" />
+      <stop offset="100%" stop-color="#9333EA" />
+    </linearGradient>
+
+    <!-- Light Text Gradient for "Skill" -->
+    <linearGradient id="textSkillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FAF5FF" />
+      <stop offset="100%" stop-color="#E9D5FF" />
+    </linearGradient>
+
+    <!-- Dark Text Gradient for "Fest" -->
+    <linearGradient id="textFestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7E22CE" />
+      <stop offset="100%" stop-color="#3B0764" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow for Depth -->
+    <filter id="subtleShadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#4C1D95" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <g filter="url(#subtleShadow)">
+    <!-- LOGO ICON -->
+    <g transform="translate(40, 35)">
+      <!-- Top Wing / Bar -->
+      <path d="M 20 10 L 115 10 C 122 10, 125 15, 120 22 L 95 52 C 92 56, 86 58, 80 58 L 45 58 Z" fill="url(#iconAccentGrad)" />
+      
+      <!-- Lower Angled Stem -->
+      <path d="M 45 32 L 82 32 C 87 32, 90 36, 88 41 L 52 128 C 49 135, 40 138, 33 133 L 12 118 C 6 113, 6 104, 11 98 Z" fill="url(#iconMainGrad)" />
+    </g>
+
+    <!-- LOGO TEXT -->
+    <!-- "Skill" -->
+    <text x="200" y="132" font-family="system-ui, -apple-system, &#39;Montserrat&#39;, &#39;Segoe UI&#39;, &#39;Inter&#39;, sans-serif" font-size="96" font-weight="800" letter-spacing="-0.5px" fill="url(#textSkillGrad)" stroke="#D8B4FE" stroke-width="1.5">Skill</text>
+
+    <!-- "Fest" -->
+    <text x="425" y="132" font-family="system-ui, -apple-system, &#39;Montserrat&#39;, &#39;Segoe UI&#39;, &#39;Inter&#39;, sans-serif" font-size="96" font-weight="800" letter-spacing="-0.5px" fill="url(#textFestGrad)">Fest</text>
+  </g>
+</svg>
