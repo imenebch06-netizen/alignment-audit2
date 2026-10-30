@@ -39,20 +39,29 @@ OLLAMA_ORIGINS="http://localhost:8080" ollama serve
 
 ```
 index.html        UI structure (Tailwind classes)
-css/theme.css     light-blue design system, soft shadows, gauge, badges
+css/theme.css     dark "instrument panel" design system, rail stepper, badges, responsive components
 js/config.js      settings panel; persistence is opt-in
 js/api.js         engine-agnostic streaming client (SSE + JSON fallback)
 js/prompt.js      system prompt and message builder (edit to change tone/report shape)
 js/parser.js      tolerant JSON recovery and normalization
-js/upload.js      dropzones, instant thumbnails, image downscaling
-js/render.js      gauge, errors, fixes (textContent only, no innerHTML)
+js/upload.js      dropzones, instant thumbnails, per-slot remove, image downscaling
+js/stepper.js     auto-tracked 1-2-3 workflow bar (name -> images -> report)
+js/render.js      gauge, compare strip, errors, fixes (textContent only, no innerHTML)
+js/leaderboard.js name + email-ID board with upsert on re-audits, CSV export
 js/app.js         orchestrator
 ```
 
 ## Notes
 
 - Keys stay in the page unless the user ticks "Remember", which stores them in this browser's localStorage.
+- OpenRouter credentials belong in Playroom Settings; never commit an API key.
+
+API Base URL / Endpoint : https://openrouter.ai/api/v1
+Model Identifier String : openrouter/free
+
+- Participants are identified by email (the unique ID, stored only on this device). Re-audits with the same email replace the earlier result in the board.
   Do not use shared computers for that option.
 - Accuracy is a model estimate, not a pixel diff. Small local models vary a lot; try several.
 - To add a new engine, nothing in the code changes: just paste a different URL and model id.
-- Replace the dashed logo box in `index.html` (`#club-logo`) with an `<img>` when your logo is ready.
+- Replace the dashed logo box in the header with an `<img>` when your logo is ready (already wired via `#club-logo`).
+

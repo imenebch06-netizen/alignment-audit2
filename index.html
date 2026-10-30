@@ -1,63 +1,74 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Matching Check</title>
+  <title>Matching Check — Alignment Audit</title>
+  <meta name="description" content="Compare your HTML/CSS build against a design mockup with any vision model." />
 
   <!-- Tailwind via CDN keeps the project build-free. Swap for the CLI in production. -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
-    // Design tokens: soft sky-blue surfaces, calm blue accents.
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            brand: { 50: '#eff6ff', 100: '#dbeafe', 300: '#93c5fd', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8', 900: '#1e3a8a' }
+            brand: { 50: '#1a2438', 100: '#22304d', 300: '#93c5fd', 500: '#60a5fa', 600: '#3b82f6', 700: '#2563eb', 900: '#93c5fd' }
           },
-          fontFamily: { mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'] }
+          fontFamily: {
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace']
+          }
         }
       }
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/theme.css" />
 </head>
 
 <body class="min-h-screen antialiased">
 
-  <!-- ============ HEADER ============ -->
-  <header class="border-b border-[#dbe6f7] bg-white/85 backdrop-blur sticky top-0 z-30 shadow-sm">
-    <div class="mx-auto max-w-7xl px-4 py-3 flex items-center gap-4">
-      <!-- Club logo placeholder: intentionally empty, replace with <img> later -->
-      <!-- Logos: club × event -->
-<div class="flex items-center gap-3 shrink-0">
-  <div id="club-logo" class="h-12 sm:h-14 flex items-center">
-    <img src="img/logo.svg" alt="Club logo" class="h-full w-auto max-w-[9rem] object-contain" />
-  </div>
+  <a href="#tool" class="skip-link">Skip to the tool</a>
 
-  <span class="text-xl font-light text-brand-300 select-none" aria-hidden="true">×</span>
+  <!-- ============ TOP BAR (slim, dev-tool chrome) ============ -->
+  <header class="site-header sticky top-0 z-30">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 h-14 flex items-center gap-3 sm:gap-4">
 
-  <div id="event-logo" class="h-12 sm:h-14 flex items-center">
-    <img src="img/event-logo.svg" alt="Event logo" class="h-full w-auto max-w-[9rem] object-contain" />
-  </div>
-</div>
-
-      <div class="min-w-0">
-        <h1 class="text-lg sm:text-xl font-bold text-slate-900 truncate">Matching Check</h1>
-        <p class="text-xs text-slate-500 truncate">Compare your HTML/CSS build against the design mockup</p>
+      <!-- logos -->
+      <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div id="club-logo" class="h-7 sm:h-9 flex items-center">
+          <img src="img/logo.svg" alt="Club logo" class="h-full w-auto max-w-[5.5rem] sm:max-w-[7rem] object-contain" />
+        </div>
+        <span class="text-brand-600/70 font-mono text-sm select-none" aria-hidden="true">×</span>
+        <div id="event-logo" class="h-7 sm:h-9 flex items-center">
+          <img src="img/event-logo.svg" alt="Event logo" class="h-full w-auto max-w-[5.5rem] sm:max-w-[7rem] object-contain" />
+        </div>
       </div>
 
-      <button id="settings-toggle" type="button"
-              class="ml-auto btn-ghost" aria-expanded="false" aria-controls="settings-panel">
-        <span aria-hidden="true">⚙</span> Playroom Settings
-      </button>
+      <!-- wordmark -->
+      <div class="min-w-0 hidden sm:flex items-center gap-2.5">
+        <span class="w-px h-5 bg-[#22304d]" aria-hidden="true"></span>
+        <h1 class="font-mono text-sm text-slate-300 truncate">
+          <span class="text-slate-400">~/</span>matching-check<span class="cursor-blink text-brand-500" aria-hidden="true">_</span>
+        </h1>
+      </div>
+
+      <!-- model chip (reflects the configured engine) + settings -->
+      <div class="ml-auto flex items-center gap-2 sm:gap-3">
+        <span id="model-chip" class="model-chip hidden md:inline-flex" data-state="idle">no model configured</span>
+        <button id="settings-toggle" type="button"
+                class="btn-ghost shrink-0" aria-expanded="false" aria-controls="settings-panel">
+          <span class="gear" aria-hidden="true">⚙</span>
+          <span class="hidden sm:inline">Settings</span>
+        </button>
+      </div>
     </div>
 
-    <!-- ============ MULTI-MODEL PLAYROOM (starts empty) ============ -->
-    <section id="settings-panel" class="hidden border-t border-[#dbe6f7] bg-brand-50/70">
-      <form id="settings-form" autocomplete="off" class="mx-auto max-w-7xl px-4 py-5 grid gap-4 md:grid-cols-3">
+    <!-- ============ SETTINGS DRAWER ============ -->
+    <section id="settings-panel" class="hidden border-t border-[#1e2937] bg-[#0c111c]/90 backdrop-blur">
+      <form id="settings-form" autocomplete="off" class="mx-auto max-w-6xl px-4 sm:px-6 py-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <label class="block">
           <span class="field-label">API Base URL / Endpoint</span>
           <input id="cfg-baseUrl" name="baseUrl" type="url" spellcheck="false"
@@ -70,129 +81,224 @@
                  class="field" placeholder="e.g. llama3.2-vision, qwen2.5-vl" />
         </label>
 
-        <label class="block">
+        <label class="block sm:col-span-2 lg:col-span-1">
           <span class="field-label">API Access Key / Bearer Token</span>
           <input id="cfg-apiKey" name="apiKey" type="password" spellcheck="false"
                  class="field" placeholder="Leave empty for local setups" />
         </label>
 
-        <div class="md:col-span-3 flex flex-wrap items-center gap-4 text-xs text-slate-600">
+        <div class="sm:col-span-2 lg:col-span-3 flex flex-wrap items-center gap-4 text-xs text-slate-500 pt-1">
           <label class="inline-flex items-center gap-2 cursor-pointer">
-            <input id="cfg-remember" type="checkbox" class="accent-blue-600" />
-            Remember these settings on this device (stored in localStorage, never sent anywhere except your endpoint)
+            <input id="cfg-remember" type="checkbox" class="accent-blue-500 h-4 w-4" />
+            Remember on this device (localStorage — never sent anywhere except your endpoint)
           </label>
-          <button id="cfg-clear" type="button" class="underline text-brand-700 hover:text-brand-900">Clear all fields</button>
+          <button id="cfg-clear" type="button" class="underline text-brand-500 hover:text-brand-300">Clear all fields</button>
         </div>
       </form>
     </section>
   </header>
 
-  <main class="mx-auto max-w-7xl px-4 py-8 space-y-8">
-<!-- ============ PARTICIPANT ============ -->
-<section class="panel">
-  <label class="block max-w-md">
-    <span class="field-label">Participant name</span>
-    <input id="participant-name" type="text" maxlength="40" autocomplete="off"
-           class="field" placeholder="Full name" />
-  </label>
-</section><!-- ============ PARTICIPANT ============ -->
+  <!-- ============ APP SHELL: rail + main ============ -->
+  <div id="tool" class="mx-auto max-w-6xl px-4 sm:px-6 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-10">
 
-    <!-- ============ PARTICIPANT RESULTS ============ -->
-    <section class="panel" aria-label="Participant results">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-2">
-        <h2 class="text-base font-semibold text-slate-900">Participants</h2>
-        <div class="flex gap-2">
-          <button id="lb-export" type="button" class="btn-ghost">Export CSV</button>
-          <button id="lb-clear" type="button" class="btn-ghost">Clear</button>
+    <!-- ============ WORKFLOW RAIL ============
+         Horizontal strip under the top bar (mobile),
+         vertical sticky rail (lg+). stepper.js drives it. -->
+    <aside class="rail sticky lg:top-24 top-14 z-20" aria-label="Workflow progress">
+      <span class="rail-label">workflow</span>
+      <ol id="stepper" class="rail-steps">
+        <li id="step-1" class="step" data-state="active">
+          <span class="step-dot mono-font" aria-hidden="true">1</span>
+          <div class="min-w-0">
+            <span class="step-label">Identity</span>
+            <span class="step-sub">Who's auditing</span>
+          </div>
+        </li>
+        <li id="step-2" class="step" data-state="upcoming">
+          <span class="step-dot mono-font" aria-hidden="true">2</span>
+          <div class="min-w-0">
+            <span class="step-label">Assets</span>
+            <span class="step-sub">Mockup + build</span>
+          </div>
+        </li>
+        <li id="step-3" class="step" data-state="upcoming">
+          <span class="step-dot mono-font" aria-hidden="true">3</span>
+          <div class="min-w-0">
+            <span class="step-label">Report</span>
+            <span class="step-sub">Run + results</span>
+          </div>
+        </li>
+      </ol>
+    </aside>
+
+    <main class="min-w-0 pb-16 pt-2 lg:pt-8 space-y-12">
+
+      <!-- ============ 01 IDENTITY ============ -->
+      <section class="flow-sec" aria-label="Participant">
+        <div class="sec-head">
+          <span class="sec-no">01</span>
+          <h2 class="sec-title">Identity</h2>
+          <span class="sec-rule" aria-hidden="true"></span>
         </div>
-      </div>
-      <p class="text-sm text-slate-500 mb-4">Completed participants appear here, ranked by accuracy.</p>
-      <ol id="lb-list" class="space-y-2"></ol>
-    </section>
-
-    <!-- ============ DUAL UPLOAD HUB ============ -->
-    <section aria-label="Image upload" class="grid gap-6 md:grid-cols-2">
-      <div class="dropzone" data-slot="A" tabindex="0" role="button"
-           aria-label="Upload Image A - Reference UI Mockup">
-        <input type="file" accept="image/*" class="sr-only" />
-        <h2 class="text-sm font-semibold text-slate-800">Image A - Reference UI Mockup</h2>
-        <div class="dz-body">
-          <img class="dz-preview hidden" alt="Preview of Image A" />
-          <p class="dz-hint">Drop an image here or click to browse</p>
+        <div class="grid gap-4 sm:grid-cols-2 sm:max-w-2xl">
+          <label class="block">
+            <span class="field-label">Display name</span>
+            <input id="participant-name" type="text" maxlength="40" autocomplete="name"
+                   class="field" placeholder="Ada Lovelace" />
+          </label>
+          <label class="block">
+            <span class="field-label">Email <span class="text-slate-500">(unique ID)</span></span>
+            <input id="participant-email" type="email" maxlength="60" autocomplete="email" inputmode="email"
+                   spellcheck="false" class="field font-mono" placeholder="you@university.edu" />
+          </label>
         </div>
-        <p class="dz-meta text-xs text-slate-600"></p>
-      </div>
+        <p class="text-xs text-slate-400 mt-2">Each audit adds a row to the participant board below. Re-audits with the same email replace the previous result. Nothing leaves this device.</p>
+      </section>
 
-      <div class="dropzone" data-slot="B" tabindex="0" role="button"
-           aria-label="Upload Image B - Your Coded HTML/CSS Output">
-        <input type="file" accept="image/*" class="sr-only" />
-        <h2 class="text-sm font-semibold text-slate-800">Image B - Your Coded HTML/CSS Output</h2>
-        <div class="dz-body">
-          <img class="dz-preview hidden" alt="Preview of Image B" />
-          <p class="dz-hint">Drop a screenshot here or click to browse</p>
+      <!-- ============ 02 ASSETS ============ -->
+      <section aria-label="Image upload" class="flow-sec relative">
+        <div class="sec-head">
+          <span class="sec-no">02</span>
+          <h2 class="sec-title">Assets</h2>
+          <span class="sec-rule" aria-hidden="true"></span>
         </div>
-        <p class="dz-meta text-xs text-slate-600"></p>
-      </div>
-    </section>
 
-    <!-- ============ ACTION ============ -->
-    <section class="flex flex-col items-center gap-3">
-      <div class="flex gap-3">
-        <button id="run-btn" type="button" class="btn-primary">Execute Alignment Audit</button>
-        <button id="cancel-btn" type="button" class="btn-ghost hidden">Cancel</button>
-      </div>
-      <p id="status" role="status" aria-live="polite" class="text-sm text-slate-500 min-h-[1.25rem]"></p>
-    </section>
+        <div class="grid gap-4 sm:gap-6 md:grid-cols-2">
+          <div class="dropzone" data-slot="A" tabindex="0" role="button"
+               aria-label="Upload Image A - Reference UI mockup">
+            <input type="file" accept="image/*" class="sr-only" aria-label="Choose image A file" />
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="slot-chip" aria-hidden="true">A</span>
+                <h3 class="text-sm font-semibold text-slate-200 min-w-0 truncate">Reference UI mockup</h3>
+              </div>
+              <button type="button" class="dz-remove hidden" aria-label="Remove Image A"><span aria-hidden="true">âœ•</span></button>
+            </div>
+            <div class="dz-body">
+              <img class="dz-preview hidden" alt="Preview of Image A" />
+              <p class="dz-hint"><strong>drop image here</strong><br /><span class="font-mono text-[0.7rem]">or click to browse</span></p>
+            </div>
+            <p class="dz-meta font-mono text-[0.7rem] text-slate-400" aria-live="polite"></p>
+          </div>
 
-    <!-- ============ LIVE STREAM (visible while the model answers) ============ -->
-    <section id="stream-section" class="hidden panel">
-      <div class="flex items-center gap-3 mb-3">
-        <span class="pulse-dot"></span>
-        <h2 class="text-sm font-semibold text-slate-800">Model output (live)</h2>
-      </div>
-      <pre id="stream-out" class="font-mono text-xs text-brand-900 bg-brand-50 rounded-lg p-3 whitespace-pre-wrap break-words max-h-48 overflow-auto"></pre>
-    </section>
-
-    <!-- ============ RESULTS DASHBOARD ============ -->
-    <section id="results" class="hidden space-y-6" aria-label="Audit results">
-
-      <div class="panel flex flex-col md:flex-row items-center gap-8">
-        <!-- Radial accuracy gauge -->
-        <div class="relative h-48 w-48 shrink-0">
-          <svg viewBox="0 0 120 120" class="h-full w-full -rotate-90 gauge-glow">
-            <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
-            <circle cx="60" cy="60" r="54" fill="none" stroke="#dbeafe" stroke-width="10" />
-            <circle id="gauge-arc" cx="60" cy="60" r="54" fill="none" stroke="url(#gaugeGrad)"
-                    stroke-width="10" stroke-linecap="round"
-                    stroke-dasharray="339.292" stroke-dashoffset="339.292" />
-          </svg>
-          <div class="absolute inset-0 flex flex-col items-center justify-center">
-            <span id="gauge-value" class="text-4xl font-bold text-slate-900">0%</span>
-            <span class="text-[11px] uppercase tracking-widest text-brand-600">Accuracy</span>
+          <div class="dropzone" data-slot="B" tabindex="0" role="button"
+               aria-label="Upload Image B - Your coded output">
+            <input type="file" accept="image/*" class="sr-only" aria-label="Choose image B file" />
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <span class="slot-chip slot-chip-b" aria-hidden="true">B</span>
+                <h3 class="text-sm font-semibold text-slate-200 min-w-0 truncate">Your coded output</h3>
+              </div>
+              <button type="button" class="dz-remove hidden" aria-label="Remove Image B"><span aria-hidden="true">âœ•</span></button>
+            </div>
+            <div class="dz-body">
+              <img class="dz-preview hidden" alt="Preview of Image B" />
+              <p class="dz-hint"><strong>drop screenshot here</strong><br /><span class="font-mono text-[0.7rem]">or click to browse</span></p>
+            </div>
+            <p class="dz-meta font-mono text-[0.7rem] text-slate-400" aria-live="polite"></p>
           </div>
         </div>
 
-        <div class="min-w-0">
-          <h2 class="text-lg font-semibold text-slate-900 mb-2">Overall assessment</h2>
-          <p id="summary" class="text-sm text-slate-600 leading-relaxed"></p>
-        </div>
-      </div>
+        <span class="vs-chip pointer-events-none hidden md:flex" aria-hidden="true">vs</span>
+      </section>
 
-      <!-- Split panel recap -->
-      <div class="grid gap-6 lg:grid-cols-2">
-        <div class="panel">
-          <h2 class="text-base font-semibold text-slate-900 mb-4">Identified Errors &amp; Layout Shifts</h2>
-          <ul id="errors-list" class="space-y-3"></ul>
+      <!-- ============ 03 EXECUTE ============ -->
+      <section class="flow-sec" aria-label="Execute">
+        <div class="sec-head">
+          <span class="sec-no">03</span>
+          <h2 class="sec-title">Execute</h2>
+          <span class="sec-rule" aria-hidden="true"></span>
         </div>
-        <div class="panel">
-          <h2 class="text-base font-semibold text-slate-900 mb-4">Suggested HTML/CSS Modifications</h2>
-          <ul id="fixes-list" class="space-y-3"></ul>
+
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <button id="run-btn" type="button" class="btn-primary w-full sm:w-auto">Execute Alignment Audit</button>
+          <button id="cancel-btn" type="button" class="btn-ghost justify-center hidden">Cancel</button>
         </div>
-      </div>
-    </section>
-  </main>
-  <footer class="py-10 text-center text-xs text-slate-500">
-    Open source educational tool · bring your own vision model
+        <p id="status" role="status" aria-live="polite" class="status-line mt-3"></p>
+
+        <!-- live terminal -->
+        <section id="stream-section" class="terminal hidden mt-4">
+          <div class="terminal-head">
+            <span class="dot dot-r" aria-hidden="true"></span>
+            <span class="dot dot-y" aria-hidden="true"></span>
+            <span class="dot dot-g" aria-hidden="true"></span>
+            <span class="terminal-title">model stream — live</span>
+          </div>
+          <pre id="stream-out" class="font-mono text-[0.78rem] leading-relaxed text-[#9ecbff] whitespace-pre-wrap break-words max-h-52 sm:max-h-72 overflow-auto"></pre>
+        </section>
+      </section>
+
+      <!-- ============ 04 REPORT ============ -->
+      <section id="results" class="hidden space-y-10" aria-label="Audit results">
+        <div class="sec-head">
+          <span class="sec-no">04</span>
+          <h2 class="sec-title">Report</h2>
+          <span class="sec-rule" aria-hidden="true"></span>
+        </div>
+
+        <!-- score + verdict -->
+        <div class="panel flex flex-col md:flex-row items-center gap-6 md:gap-8">
+          <div class="relative h-44 w-44 md:h-48 md:w-48 shrink-0">
+            <svg viewBox="0 0 120 120" class="h-full w-full -rotate-90 gauge-glow">
+              <defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#818cf8"/></linearGradient></defs>
+              <circle cx="60" cy="60" r="54" fill="none" stroke="#1e2937" stroke-width="10" />
+              <circle id="gauge-arc" cx="60" cy="60" r="54" fill="none" stroke="url(#gaugeGrad)"
+                      stroke-width="10" stroke-linecap="round"
+                      stroke-dasharray="339.292" stroke-dashoffset="339.292" />
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span id="gauge-value" class="font-mono text-4xl font-semibold text-slate-100">0%</span>
+              <span class="text-[0.65rem] uppercase tracking-[0.2em] text-brand-500">accuracy</span>
+            </div>
+          </div>
+
+          <div class="min-w-0 text-center md:text-left">
+            <h3 class="text-sm font-semibold uppercase tracking-widest text-slate-500 mb-2">Overall assessment</h3>
+            <p id="summary" class="text-sm text-slate-300 leading-relaxed"></p>
+          </div>
+        </div>
+
+        <!-- side-by-side comparison -->
+        <div id="compare-strip" class="hidden panel">
+          <div class="flex flex-wrap items-baseline justify-between gap-2 mb-4">
+            <h3 class="text-sm font-semibold uppercase tracking-widest text-slate-400">Side-by-side review</h3>
+            <span class="font-mono text-[0.7rem] text-slate-500">mockup(A) vs build(B)</span>
+          </div>
+          <div id="compare-grid" class="grid grid-cols-1 min-[480px]:grid-cols-2 gap-3 sm:gap-4"></div>
+        </div>
+
+        <!-- errors + fixes -->
+        <div class="grid gap-8 lg:grid-cols-2">
+          <div class="min-w-0">
+            <h3 class="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">Identified errors &amp; layout shifts</h3>
+            <ul id="errors-list" class="space-y-3"></ul>
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">Suggested HTML/CSS modifications</h3>
+            <ul id="fixes-list" class="space-y-3"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 05 BOARD ============ -->
+      <section id="leaderboard" class="flow-sec" aria-label="Participant results">
+        <div class="sec-head">
+          <span class="sec-no">05</span>
+          <h2 class="sec-title">Participant board</h2>
+          <span class="sec-rule" aria-hidden="true"></span>
+          <span id="lb-count" class="count-chip" aria-label="Number of entries">0</span>
+          <div class="ml-auto flex gap-2">
+            <button id="lb-export" type="button" class="btn-ghost">Export CSV</button>
+            <button id="lb-clear" type="button" class="btn-ghost">Clear</button>
+          </div>
+        </div>
+        <ol id="lb-list" class="lb-list"></ol>
+      </section>
+    </main>
+  </div>
+
+  <footer class="py-8 text-center font-mono text-[0.7rem] text-slate-500 px-4 border-t border-[#1e2937]">
+    <span class="text-slate-400">open-source educational tool</span> · bring your own vision model
   </footer>
 
   <!-- Native ES modules: no bundler needed. Serve over http (see README). -->

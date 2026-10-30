@@ -30,6 +30,12 @@ export function initDropzones(onChange) {
     input.addEventListener('click', (e) => e.stopPropagation());
     input.addEventListener('change', () => input.files[0] && setFile(zone, slot, input.files[0], onChange));
 
+    // ✕ button clears the slot without triggering the zone's file picker.
+    const removeBtn = zone.querySelector('.dz-remove');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', (e) => { e.stopPropagation(); clearFile(zone, slot, onChange)(); });
+    }
+
     ['dragenter', 'dragover'].forEach((t) =>
       zone.addEventListener(t, (e) => { e.preventDefault(); zone.classList.add('is-over'); }));
     ['dragleave', 'drop'].forEach((t) =>
@@ -59,8 +65,31 @@ function setFile(zone, slot, file, onChange) {
   img.classList.remove('hidden');
   hint.classList.add('hidden');
   zone.classList.add('has-file');
+  zone.querySelector('.dz-remove')?.classList.remove('hidden');
   meta.textContent = `${file.name} · ${(file.size / 1024).toFixed(0)} KB`;
   onChange?.(slot);
+}
+
+/** Clears a slot: resets the preview, meta line and has-file styling. */
+export function clearFile(zone, slot, onChange) {
+  const img = zone.querySelector('.dz-preview');
+  const hint = zone.querySelector('.dz-hint');
+  const meta = zone.querySelector('.dz-meta');
+  const input = zone.querySelector('input[type="file"]');
+  const removeBtn = zone.querySelector('.dz-remove');
+  const clear = () => {
+    if (img.src?.startsWith('blob:')) URL.revokeObjectURL(img.src);
+    files[slot] = null;
+    img.src = '';
+    img.classList.add('hidden');
+    hint.classList.remove('hidden');
+    meta.textContent = '';
+    zone.classList.remove('has-file');
+    removeBtn?.classList.add('hidden');
+    input.value = '';                          // so re-picking the same file fires "change"
+    onChange?.(slot);
+  };
+  return clear;
 }
 
 /**

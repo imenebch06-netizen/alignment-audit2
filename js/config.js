@@ -39,6 +39,7 @@ export function validateConfig(cfg) {
 
 /** Called on every input event; saves only if "Remember" is ticked. */
 export function persistIfEnabled() {
+  updateChip();
   try {
     if (els.remember().checked) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...readConfig(), remember: true }));
@@ -77,13 +78,24 @@ export function initSettingsPanel() {
   toggle.addEventListener('click', () => setPanelOpen(!panel.classList.contains('hidden') ? false : true));
   document.getElementById('settings-form').addEventListener('input', persistIfEnabled);
   document.getElementById('settings-form').addEventListener('submit', (e) => e.preventDefault());
-  document.getElementById('cfg-clear').addEventListener('click', clearConfig);
+  document.getElementById('cfg-clear').addEventListener('click', () => { clearConfig(); updateChip(); });
 
   restoreIfOptedIn();
+  updateChip();
 
   function setPanelOpen(open) {
     panel.classList.toggle('hidden', !open);
     toggle.setAttribute('aria-expanded', String(open));
   }
   return { open: () => setPanelOpen(true) };
+}
+
+/** Keeps the top-bar engine chip in sync with the configured endpoint. */
+export function updateChip() {
+  const chip = document.getElementById('model-chip');
+  if (!chip) return;
+  const { baseUrl, model } = readConfig();
+  const ready = Boolean(baseUrl && model);
+  chip.textContent = ready ? `${model}` : 'no model configured';
+  chip.dataset.state = ready ? 'ready' : 'idle';
 }
